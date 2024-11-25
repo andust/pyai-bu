@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: #ffffff;
+    --foreground: #171717;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0a0a0a;
+      --foreground: #ededed;
+    }
+  }
+  
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  @layer base {
+    a {
+      @apply underline;
+    }
+    textarea {
+      @apply block resize-none p-2.5 w-full text-gray-900 bg-gray-50 rounded dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white;
+    }
+    .absolute-center {
+      @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+    }
+    input {
+      @apply text-black
+    }
+  }
+  

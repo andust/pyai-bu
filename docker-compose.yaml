@@ -1,0 +1,114 @@
+version: "3"
+
+services:
+  genai_srv:
+    container_name: genai_srv
+    hostname: genai_srv
+    image: genai_srv
+    build: ./genai_srv
+    volumes:
+      - ./genai_srv/:/code/genai_srv/
+    ports:
+      - 7001:80
+
+  genai_client:
+    container_name: genai_client
+    hostname: genai_client
+    image: genai_client
+    build: ./genai_client
+    volumes:
+      - ./genai_client/app/:/code/genai_client/
+      - /code/genai_client/node_modules
+    ports:
+      - 3001:3001
+
+  angular-genai-client:
+    build: ./angular-genai-client
+    container_name: angular-genai-client
+    ports:
+      - '4200:4200'
+    volumes:
+      - ./angular-genai-client/:/angular-genai-client
+    environment:
+      - STYLE=scss
+    command: >
+      sh -c "npm install &&
+             ng serve --host 0.0.0.0 --port 4200 --configuration=development"
+
+  user_srv:
+    container_name: user_srv
+    hostname: user_srv
+    image: user_srv
+    build: ./user_srv
+    command: >
+      sh -c "go install github.com/air-verse/air@v1.52.2 &&
+             air"
+    env_file:
+      - ./user_srv/.env
+    volumes:
+      - ./user_srv/app/:/code/user_srv/
+    ports:
+      - 7008:7008
+
+  lem_db_mongo:
+    container_name: lem_db_mongo
+    hostname: lem_db_mongo
+    image: mongo:7.0
+    environment:
+      DB_NAME: lem_mdb
+      DB_USERNAME: admin
+      DB_PASSWORD: password
+    volumes:
+      - ./db-data/mongo/:/data/db
+    ports:
+      - 27017:27017
+
+  lem_redis:
+    container_name: lem_redis
+    hostname: lem_redis
+    image: redis:7.4
+    command: redis-server --save 20 1 --loglevel warning --requirepass q2sGPHduXqKHSsYlz59FF9i7hc8VUraQ
+    volumes:
+      - ./cache:/data
+    ports:
+      - 6379:6379
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: always
+    container_name: qdrant
+    ports:
+      - 6333:6333
+      - 6334:6334
+    expose:
+      - 6333
+      - 6334
+      - 6335
+    configs:
+      - source: qdrant_config
+        target: /qdrant/config/production.yaml
+    volumes:
+      - ./qdrant_data:/qdrant/storage
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data:/prometheus
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: root
+      GF_SECURITY_ADMIN_PASSWORD: password
+    ports:
+      - 3000:3000
+
+configs:
+  qdrant_config:
+    content: |
+      log_level: INFO

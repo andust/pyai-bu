@@ -1,0 +1,16 @@
+<header class="flex justify-between items-center container py-5">
+  <nav class="space-x-5">
+    <a routerLink="/">Home</a>
+    <a routerLink="/files">Files</a>
+    <a routerLink="/images">Images</a>
+  </nav>
+  <div *ngIf="userEmail; else elseBlock">
+    User: {{userEmail}}
+    <button>Logout</button>
+  </div>
+  
+  <ng-template #elseBlock><button><a routerLink="/auth/login">Login</a></button></ng-template>
+</header>
+<main>
+  <router-outlet />
+</main>
