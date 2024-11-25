@@ -1,0 +1,6 @@
+cache
+db-data
+**.pyc
+.env
+prometheus_data
+qdrant_data
