@@ -16,7 +16,7 @@ export class LoginComponent {
   });
   constructor(private authService: AuthService, private router: Router) {}
 
-  onSubmit() {
+  onSubmit(): void {
     const { email, password } = this.loginForm.value;
     if (email && password) {
       this.authService.baseLogin(email, password).subscribe({

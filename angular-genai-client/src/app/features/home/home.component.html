@@ -1,5 +1,20 @@
 <div class="container my-3 space-y-3">
-    <button>New chat</button>
-
-    <div>chat list</div>
+  <app-button theme="primary" type="reset" (onClick)="handleNewChat()"
+    >New chat</app-button
+  >
+  @if (chats.length > 0) {
+    <ul>
+      @for (chat of chats; track chat.id) {
+        <li>
+          <a routerLink="chat/{{chat.id}}">
+            @if (chat.questions && chat.questions.length > 0) {
+              {{ chat.questions[0].content }}
+            } @else {
+              New chat
+            }
+          </a>
+        </li>
+      }
+    </ul>
+  }
 </div>

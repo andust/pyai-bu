@@ -8,6 +8,12 @@ module.exports = {
       container: {
         center: true
       },
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        red: "red",
+        green: "green",
+      },
     },
   },
   plugins: [],

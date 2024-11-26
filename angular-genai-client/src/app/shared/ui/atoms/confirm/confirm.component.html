@@ -1,0 +1,9 @@
+@if (isVisible) {
+  <span (click)="handleClick()"><ng-content></ng-content></span>
+} @else {
+  <div class="flex items-center space-x-3">
+    <p>Are you sure you want to continue?</p>
+    <app-button theme="danger" (onClick)="handleConfirm()">Yes</app-button>
+    <app-button theme="primary" (onClick)="handleCancel()">No</app-button>
+  </div>
+}

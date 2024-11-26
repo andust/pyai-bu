@@ -30,6 +30,7 @@ def register_middlewares(app: FastAPI) -> FastAPI:
         allow_origins=[
             "http://localhost:7007",
             "http://localhost:3001",
+            "http://localhost:4200",
         ],
         allow_credentials=True,
         allow_methods=["*"],

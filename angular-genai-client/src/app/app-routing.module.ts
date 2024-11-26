@@ -16,6 +16,11 @@ const routes: Routes = [
           import("./features/home/home.module").then((m) => m.HomeModule),
       },
       {
+        path: "chat",
+        loadChildren: () =>
+          import("./features/chat/chat.module").then((m) => m.ChatModule),
+      },
+      {
         path: "files",
         loadChildren: () =>
           import("./features/files/files.module").then((m) => m.FilesModule),
@@ -33,6 +38,7 @@ const routes: Routes = [
       },
     ],
   },
+  { path: 'chat', loadChildren: () => import('./features/chat/chat.module').then(m => m.ChatModule) },
 ];
 
 @NgModule({

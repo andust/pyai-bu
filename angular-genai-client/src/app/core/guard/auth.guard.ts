@@ -4,7 +4,7 @@ import { AuthService } from "../services/auth.service";
 import { Store } from "@ngrx/store";
 import { setUser } from "../store/user/user.actions";
 
-export const isAuthenticatedGuard: CanActivateFn = (route, state) => {
+export const isAuthenticatedGuard: CanActivateFn = (route, state): boolean => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const store = inject(Store)

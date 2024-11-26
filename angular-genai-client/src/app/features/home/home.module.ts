@@ -3,15 +3,18 @@ import { CommonModule } from '@angular/common';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
+import { UiModule } from '../../shared/ui/ui.module';
 
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
     CommonModule,
-    HomeRoutingModule
-  ]
+    HomeRoutingModule,
+    UiModule,
+  ],
 })
-export class HomeModule { }
+export class HomeModule {
+}
