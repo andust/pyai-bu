@@ -13,21 +13,17 @@ import Select, { Option } from "@/app/_molecules/select/Select";
 import { ChatMode } from "@/app/types";
 import { DocFile, getClientFiles } from "@/app/_models/file";
 
-// const contentSchema = z
-//   .string()
-//   .min(2, { message: "👉 min 2 characters" })
-//   .max(1000, { message: "👉 max 1000 characters" });
-
-const contentSchema = z.object({
-  content: z
-    .string()
-    .min(2, { message: "👉 min 2 characters" })
-    .max(1000, { message: "👉 max 1000 characters" }),
-  isRagAndDocument: z.boolean(),
-}).refine(
-  (data) => !data.isRagAndDocument,
-  { message: "👉 for RAG you need to select document" }
-);
+const contentSchema = z
+  .object({
+    content: z
+      .string()
+      .min(2, { message: "👉 min 2 characters" })
+      .max(1000, { message: "👉 max 1000 characters" }),
+    isRagAndDocument: z.boolean(),
+  })
+  .refine((data) => !data.isRagAndDocument, {
+    message: "👉 for RAG you need to select document",
+  });
 
 const options: Option<ChatMode>[] = [
   {
@@ -60,7 +56,8 @@ const LoginForm = ({ id }: { id: string }) => {
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (chatMode === "rag" && !document?.value) {
+    const documentId = document?.value || "";
+    if (chatMode === "rag" && !documentId) {
       return;
     }
 
@@ -69,7 +66,12 @@ const LoginForm = ({ id }: { id: string }) => {
     }
     setIsLoading(true);
     try {
-      const res = await getClientAskChat(id, content, chatMode, document?.value);
+      const res = await getClientAskChat(
+        id,
+        content,
+        chatMode,
+        documentId
+      );
       if (res.ok) {
         const resData = await res.json();
         setQuestions(resData);
@@ -86,7 +88,7 @@ const LoginForm = ({ id }: { id: string }) => {
     try {
       contentSchema.parse({
         content: cleanContent,
-        isRagAndDocument: chatMode === "rag" && !document?.value
+        isRagAndDocument: chatMode === "rag" && !document?.value,
       });
       setErrors([]);
     } catch (error) {
@@ -97,9 +99,10 @@ const LoginForm = ({ id }: { id: string }) => {
   }, [cleanContent, chatMode, document]);
 
   useEffect(() => {
-    getClientFiles().then((res) => {
-      return res.json();
-    })
+    getClientFiles()
+      .then((res) => {
+        return res.json();
+      })
       .then((files: DocFile[]) => {
         setDocuments(files);
       });
@@ -123,7 +126,8 @@ const LoginForm = ({ id }: { id: string }) => {
           }}
           defaultOption={document}
           label="Select document"
-        />)}
+        />
+      )}
       <div className="relative">
         {isLoading && <Spinner className="absolute-center" />}
         <label>
@@ -133,7 +137,9 @@ const LoginForm = ({ id }: { id: string }) => {
             onChange={(e) => setContent(e.target.value)}
             disabled={isLoading}
           />
-          <small className="text-red whitespace-pre-line">{errors.join("\n")}</small>
+          <small className="text-red whitespace-pre-line">
+            {errors.join("\n")}
+          </small>
         </label>
       </div>
       <div className="flex justify-end">

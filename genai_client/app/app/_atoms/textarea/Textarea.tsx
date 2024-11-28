@@ -23,7 +23,7 @@ export default function Textarea({
     <textarea
       className={className.join(" ")}
       name={name}
-      rows={4}
+      rows={7}
       placeholder={placeholder}
       onChange={onChange}
       value={value}

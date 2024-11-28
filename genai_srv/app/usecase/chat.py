@@ -1,6 +1,5 @@
 from typing import Any, Protocol
 
-from langchain import hub
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
@@ -35,6 +34,32 @@ class ChatUseCase:
         return "\n".join(
             [f"question: {a.content}, answer: {a.answer}" for a in self.history[:5]]
         )
+
+
+
+    async def ask_chat(self, query: str) -> str:
+        prompt = PromptTemplate.from_template("""
+            You are an assistant for question-answering tasks.
+            If you don't know the answer, just say that you don't know and need more information.
+            Use a maximum of fifty sentences and provide a concise answer.
+            Here is the conversation history:
+            {history}
+            Question: {question} 
+            Answer:
+        """)
+
+        rag_chain = (
+            {"history": RunnablePassthrough(), "question": RunnablePassthrough()}
+            | prompt
+            | self.llm
+            | log_promp
+            | StrOutputParser()
+        )
+
+        response: str = rag_chain.invoke(
+            {"question": query, "history": self.history_content},
+        )
+        return response
 
     async def ask_rag(self, query: str, must: dict | None = None) -> str:
         retriever = await self.vector_store.similarity_search(

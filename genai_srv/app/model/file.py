@@ -4,6 +4,8 @@ from typing import Literal, Protocol
 
 from pydantic import BaseModel
 
+from app.constants.file import ProcessState
+
 
 class FileProtocol(Protocol):
     filename: str | None
@@ -31,6 +33,7 @@ class FileData(BaseModel):
     id: str | None = None
     filename: str | None = None
     upload_date: datetime | None = None
+    vectorDBStatus: ProcessState = ProcessState.PENDING
 
 
 async def calculate_file_hash(file: FileProtocol) -> str:

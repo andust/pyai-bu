@@ -1,10 +1,11 @@
 from typing import Sequence
 from langchain_core.documents import Document
 
+from app.libs.lch.document import serialize_document
 from app.libs.pdf_reader.main import pdf_to_text
-from app.libs.qdrant.upload_document import upload_documents
 from app.model.file import FileProtocol, calculate_file_hash
 from app.repository.file import FileRepositoryProtocol
+from app.tasks.qdrant.upload_tasks import upload_to_qdrant
 
 
 async def files_to_documents(files: list[FileProtocol]) -> list[Document]:
@@ -45,6 +46,6 @@ class FileUseCase:
         documents = await self.file_repository.upload_files(
             files=files, user_email=user_email
         )
-        async with upload_documents(docs=documents):
-            return documents
-        return []
+
+        upload_to_qdrant.delay([serialize_document(a) for a in documents])
+        return documents

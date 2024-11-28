@@ -10,6 +10,27 @@ services:
       - ./genai_srv/:/code/genai_srv/
     ports:
       - 7001:80
+    command: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
+
+  celery_worker:
+    container_name: celery_worker
+    hostname: celery_worker
+    image: genai_srv
+    build: ./genai_srv
+    volumes:
+      - ./genai_srv/:/code/genai_srv/
+    command: celery -A app.config.celery.celery_app worker --loglevel=info
+
+  celery_flower:
+    container_name: celery_flower
+    hostname: celery_flower
+    image: genai_srv
+    build: ./genai_srv
+    volumes:
+      - ./genai_srv/:/code/genai_srv/
+    ports:
+      - 5555:5555
+    command: celery -A app.config.celery.celery_app flower --port=5555
 
   genai_client:
     container_name: genai_client
@@ -22,18 +43,18 @@ services:
     ports:
       - 3001:3001
 
-  angular-genai-client:
-    build: ./angular-genai-client
-    container_name: angular-genai-client
-    ports:
-      - '4200:4200'
-    volumes:
-      - ./angular-genai-client/:/angular-genai-client
-    environment:
-      - STYLE=scss
-    command: >
-      sh -c "npm install --legacy-peer-deps &&
-             ng serve --host 0.0.0.0 --port 4200 --configuration=development"
+  # angular-genai-client:
+  #   build: ./angular-genai-client
+  #   container_name: angular-genai-client
+  #   ports:
+  #     - '4200:4200'
+  #   volumes:
+  #     - ./angular-genai-client/:/angular-genai-client
+  #   environment:
+  #     - STYLE=scss
+  #   command: >
+  #     sh -c "npm install --legacy-peer-deps &&
+  #            ng serve --host 0.0.0.0 --port 4200 --configuration=development"
 
   user_srv:
     container_name: user_srv
@@ -72,6 +93,13 @@ services:
       - ./cache:/data
     ports:
       - 6379:6379
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
   qdrant:
     image: qdrant/qdrant:latest

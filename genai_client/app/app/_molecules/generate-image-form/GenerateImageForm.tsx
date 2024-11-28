@@ -33,7 +33,7 @@ const GenerateImageForm = () => {
     e.preventDefault();
 
     if (content.trim()) {
-      fetch(`${process.env.NEXT_PUBLIC_GENIA_SERIVCE}/api/v1/image`, {
+      fetch(`${process.env.NEXT_PUBLIC_GENIA_SERIVCE}/api/v1/file/generate-image/`, {
         credentials: "include",
         method: "POST",
         cache: "no-cache",
@@ -45,7 +45,7 @@ const GenerateImageForm = () => {
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data)) {
-            router.push(`/files?id=${data[0]}`);
+            router.push(`/files?id=${data[0]["metadata"]["file_id"]}`);
           }
         }
       });

@@ -61,9 +61,9 @@ const Select = <V,>({
     <div className="relative text-white" ref={selectRef}>
       <Button
         onClick={toggleSelect}
-        className="w-full relative z-20 bg-black p-2 border rounded text-left"
+        className="w-full relative z-20 bg-black p-2 border rounded text-left flex justify-between items-center"
       >
-        {selectedOption?.label || label}
+        {selectedOption?.label || label} <i className={`arrow transition-all ${isOpen ? "up" : "down"}`}></i>
       </Button>
       <ul
         className={`absolute z-30 w-full mt-1 bg-black border rounded transition-all duration-200 ease-in-out${showClassName}`}

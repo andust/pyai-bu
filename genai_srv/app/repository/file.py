@@ -4,6 +4,7 @@ from typing import Protocol, Sequence
 from langchain_core.documents import Document
 from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorGridFSBucket
 
+from app.constants.file import ProcessState
 from app.db.main import db
 from app.libs.pdf_reader.main import pdf_to_text
 from app.model.file import FileData, FileProtocol, calculate_file_hash
@@ -16,6 +17,8 @@ class FileRepositoryProtocol(Protocol):
         self, files: Sequence[FileProtocol], user_email: str
     ) -> list[Document]: ...
 
+    async def get(self, id: str) -> FileData: ...
+
 
 class MongoFileRepository:
     def __init__(
@@ -24,6 +27,7 @@ class MongoFileRepository:
         self.collection = collection
         self.fs = fs
 
+    # TODO change this to get_file_metadata
     async def get_file_content_type(self, id: str) -> str | None:
         result = await self.collection.find_one(
             {"_id": ObjectId(id)}, projection={"metadata.content_type": 1, "_id": 0}
@@ -76,6 +80,7 @@ class MongoFileRepository:
                     "content_type": file.content_type,
                     "user": user_email,
                     "hash": file_hash,
+                    "vectorUploadStatus": ProcessState.PENDING
                 },
             )
 
