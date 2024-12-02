@@ -21,7 +21,7 @@ This project is a web application built using FastAPI and Next.js and utilizes t
    OPENAI_API_KEY=your_api_key_here
    ```
 
-2. Rename `dev-data.example.json` to `dev-data.json`.
+2. Rename `user_srv/app/dev-data.example.json` to `user_srv/app/dev-data.json`.
 
 3. Run the application using Docker Compose:
    ```
