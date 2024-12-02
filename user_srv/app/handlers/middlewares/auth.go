@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -22,7 +21,6 @@ type AuthMiddleware struct {
 func (a AuthMiddleware) IsLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		access, err := c.Cookie("access")
-		fmt.Println("access", access)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusUnauthorized, nil)
 		}

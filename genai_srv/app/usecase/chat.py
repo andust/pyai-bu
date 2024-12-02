@@ -6,9 +6,14 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from app.libs.lch.document import format_docs
-from app.libs.lch.promp import log_promp
+from app.helpers.document.main import format_docs
 from app.model.question import Question
+
+def log_promp(a):
+    print("-" * 25)
+    print(a)
+    print("-" * 25)
+    return a
 
 
 class VectorStoreProtocol(Protocol):
@@ -34,8 +39,6 @@ class ChatUseCase:
         return "\n".join(
             [f"question: {a.content}, answer: {a.answer}" for a in self.history[:5]]
         )
-
-
 
     async def ask_chat(self, query: str) -> str:
         prompt = PromptTemplate.from_template("""
@@ -99,4 +102,28 @@ class ChatUseCase:
 
         response: str = rag_chain.invoke(query)
 
+        return response
+
+    async def extract_page_content(self, query: str) -> str:
+        prompt = PromptTemplate.from_template("""
+            You are an assistant for question-answering tasks.
+            If you don't know the answer, just say that you don't know and need more information.
+            Use a maximum of fifty sentences and provide a concise answer.
+            Here is the conversation history:
+            {history}
+            Question: {question} 
+            Answer:
+        """)
+
+        rag_chain = (
+            {"history": RunnablePassthrough(), "question": RunnablePassthrough()}
+            | prompt
+            | self.llm
+            | log_promp
+            | StrOutputParser()
+        )
+
+        response: str = rag_chain.invoke(
+            {"question": query, "history": self.history_content},
+        )
         return response

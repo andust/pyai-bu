@@ -1,5 +1,4 @@
 from datetime import datetime
-import hashlib
 from typing import Literal, Protocol
 
 from pydantic import BaseModel
@@ -35,10 +34,3 @@ class FileData(BaseModel):
     upload_date: datetime | None = None
     vectorDBStatus: ProcessState = ProcessState.PENDING
 
-
-async def calculate_file_hash(file: FileProtocol) -> str:
-    hasher = hashlib.sha256()
-    content = await file.read()
-    hasher.update(content)
-    await file.seek(0)
-    return hasher.hexdigest()

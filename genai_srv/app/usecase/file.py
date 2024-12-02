@@ -1,9 +1,10 @@
 from typing import Sequence
 from langchain_core.documents import Document
 
-from app.libs.lch.document import serialize_document
-from app.libs.pdf_reader.main import pdf_to_text
-from app.model.file import FileProtocol, calculate_file_hash
+from app.helpers.document.main import serialize_document
+from app.helpers.pdf.main import pdf_to_text
+from app.helpers.file.main import file_hash
+from app.model.file import FileProtocol
 from app.repository.file import FileRepositoryProtocol
 from app.tasks.qdrant.upload_tasks import upload_to_qdrant
 
@@ -13,7 +14,7 @@ async def files_to_documents(files: list[FileProtocol]) -> list[Document]:
     for file in files:
         if not file.filename:
             continue
-        file_hash = await calculate_file_hash(file)
+        fhash = await file_hash(file)
 
         content = await file.read()
 
@@ -26,7 +27,7 @@ async def files_to_documents(files: list[FileProtocol]) -> list[Document]:
             Document(
                 page_content=page_content,
                 metadata={
-                    "file_hash": file_hash,
+                    "file_hash": fhash,
                     "filename": file.filename,
                     "content_type": file.content_type,
                 },

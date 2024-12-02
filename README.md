@@ -16,6 +16,27 @@ This project is a web application built using FastAPI and Next.js and utilizes t
 
 ## Instructions
 
+1. Create a `.env` file in the `genai_srv` folder and add your OpenAI API key as follows:
+   ```
+   OPENAI_API_KEY=your_api_key_here
+   ```
+
+2. Rename `dev-data.example.json` to `dev-data.json`.
+
+3. Run the application using Docker Compose:
+   ```
+   docker-compose up
+   ```
+
+4. In the Makefile, execute the script to build the application:
+   ```
+   make build-script
+   ```
+
+5. Run the script to migrate developer data:
+   ```
+   make user-scripts-migrate-dev-data
+   ```
 
 ## Plan
 

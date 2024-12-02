@@ -4,9 +4,7 @@ from typing import Any
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_qdrant import QdrantVectorStore
-
 from qdrant_client.http import models
-# from qdrant_client import models
 
 from app.config.envirenment import get_settings
 
@@ -47,12 +45,9 @@ class QdrantVectorStoreService:
 
             filter = models.Filter(must=must_filters)
 
-        print("-----> FILTER", filter)
-
         vector_result = await self.qdrant.asimilarity_search(
             query=query,
             k=k,
             filter=filter,
         )
-        print("-----> VECTOR_RESULT", vector_result)
         return vector_result

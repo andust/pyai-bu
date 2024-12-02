@@ -6,8 +6,9 @@ from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorGridFSBucket
 
 from app.constants.file import ProcessState
 from app.db.main import db
-from app.libs.pdf_reader.main import pdf_to_text
-from app.model.file import FileData, FileProtocol, calculate_file_hash
+from app.helpers.pdf.main import pdf_to_text
+from app.helpers.file.main import file_hash
+from app.model.file import FileData, FileProtocol
 
 
 class FileRepositoryProtocol(Protocol):
@@ -67,8 +68,8 @@ class MongoFileRepository:
             if not file.filename:
                 continue
 
-            file_hash = await calculate_file_hash(file)
-            if (await self.get_by_hash(hash=file_hash)) is not None:
+            fhash = await file_hash(file)
+            if (await self.get_by_hash(hash=fhash)) is not None:
                 continue
 
             content = await file.read()
@@ -79,7 +80,7 @@ class MongoFileRepository:
                 metadata={
                     "content_type": file.content_type,
                     "user": user_email,
-                    "hash": file_hash,
+                    "hash": fhash,
                     "vectorUploadStatus": ProcessState.PENDING
                 },
             )
@@ -94,7 +95,7 @@ class MongoFileRepository:
                     page_content=page_content,
                     metadata={
                         "file_id": str(file_id),
-                        "file_hash": file_hash,
+                        "file_hash": fhash,
                         "filename": file.filename,
                         "content_type": file.content_type,
                     },

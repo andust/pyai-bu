@@ -12,3 +12,5 @@ class ProcessState(str, Enum):
     SUCCESS = "success"
     FAILED = "failed"
     CANCEL = "cancel"
+
+MAX_FILE_SIZE = 10 * 1024 * 1024

@@ -9,9 +9,13 @@ import (
 
 	"github.com/andust/user_service/core"
 	model "github.com/andust/user_service/models"
+	usecase "github.com/andust/user_service/use-case"
 )
 
 func MigrateDevData(c *core.Core, args ...string) {
+
+	registerUseCase := usecase.NewRegister(c.ErrorLog, c.Repository.UserRepository, c.RedisClient)
+
 	jsonFile, err := os.Open("dev-data.json")
 	if err != nil {
 		c.ErrorLog.Fatalln(err)
@@ -33,22 +37,13 @@ func MigrateDevData(c *core.Core, args ...string) {
 		log.Fatalf("Parsing JSON error: %s", err)
 	}
 	for _, user := range users {
-		newUser := model.User{
-			Username: user.Username,
-			Email:    user.Email,
-			Password: user.Password,
-			Role:     user.Role,
-		}
-		newUser.HashPassword()
+		// TODO add more fields - role, username ect.
+		result, err := registerUseCase.Base(user.Email, user.Password)
 
-		if !newUser.IsValid() {
-			log.Fatal("invalid user to insert")
-		}
-		insertedUser, err := c.Repository.UserRepository.InsertOne(newUser)
 		if err != nil {
 			c.ErrorLog.Fatalln(err)
 		}
-		fmt.Printf("user with id %s inserted", insertedUser.ID)
+		fmt.Printf("user with id %s inserted", result.ID)
 	}
 	c.InfoLog.Println("dev data inserted")
 }

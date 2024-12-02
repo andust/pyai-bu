@@ -3,8 +3,8 @@ import logging
 
 
 from app.config.celery import celery_app
-from app.libs.lch.document import deserialize_document
-from app.libs.qdrant.upload_document import upload_documents
+from app.helpers.document.main import deserialize_document
+from app.helpers.qdrant.upload import upload_documents
 
 
 async def aupload_to_qdrant(documents):

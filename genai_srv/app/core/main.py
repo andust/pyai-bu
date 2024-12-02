@@ -6,7 +6,7 @@ from toolz import pipe
 
 from app.api.routes import register_routers
 from app.config.envirenment import get_settings
-from app.libs.qdrant.upload_document import create_collection
+from app.helpers.qdrant.main import create_collection
 
 _S = get_settings()
 

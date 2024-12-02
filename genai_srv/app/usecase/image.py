@@ -3,7 +3,7 @@ from typing import Literal
 from openai import OpenAI
 from pydantic import BaseModel
 
-from app.libs.file.main import download_file
+from app.helpers.file.main import download_file
 from app.repository.file import file_repository
 
 

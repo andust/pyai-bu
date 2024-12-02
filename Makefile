@@ -17,6 +17,9 @@ user-build-scripts:
 user-build: user-build-api user-build-scripts
 	@echo "build all user services"
 
+user-scripts-migrate-dev-data:
+	docker compose exec ${USER_SERVICE_NAME} env GOOS=linux CGO_ENABLED=0 go run cmd/scripts/main.go migrate-dev-data
+
 # ALL
 build-api: user-build-api
 	@echo "build all services api"

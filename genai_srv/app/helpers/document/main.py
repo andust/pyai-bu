@@ -12,13 +12,10 @@ def recursive_character_text_splitter(
 
 
 def format_docs(docs: list[Document]) -> str:
-    for doc in docs:
-        print(doc.metadata)
     return "\n\n".join(doc.page_content for doc in docs)
 
 
 def serialize_document(document: Document) -> dict:
-    print("document.page_content", document.page_content)
     return {
         "page_content": document.page_content,
         "metadata": document.metadata,
@@ -26,7 +23,6 @@ def serialize_document(document: Document) -> dict:
 
 
 def deserialize_document(document: dict) -> Document:
-    print("deserialize_document", document)
     return Document(
         page_content=document["page_content"], metadata=document["metadata"]
     )

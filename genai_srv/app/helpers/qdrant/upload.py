@@ -1,10 +1,6 @@
 from contextlib import asynccontextmanager
 import os
 
-import qdrant_client
-from qdrant_client import models
-from qdrant_client.http.exceptions import UnexpectedResponse
-
 from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import Qdrant
@@ -12,22 +8,9 @@ from pydantic import SecretStr
 
 from app.config.envirenment import get_settings
 from app.constants.file import POSSIBLE_VECTOR_DB_CONTENT_TYPE
-from app.libs.lch.document import recursive_character_text_splitter
+from app.helpers.document.main import recursive_character_text_splitter
 
 _S = get_settings()
-
-
-async def create_collection(name: str):
-    try:
-        client = qdrant_client.AsyncQdrantClient(url=_S.QDRANT_URL)
-        await client.create_collection(
-            collection_name=name,
-            vectors_config=models.VectorParams(
-                size=1536, distance=models.Distance.COSINE
-            ),
-        )
-    except UnexpectedResponse as e:
-        print(e)
 
 
 @asynccontextmanager

@@ -8,7 +8,7 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, SecretStr
 
 from app.constants.chat import ChatMode
-from app.libs.qdrant.vector_store import QdrantVectorStoreService
+from app.helpers.qdrant.vector_store import QdrantVectorStoreService
 from app.model.question import Question
 from app.repository.chat import chat_repository
 from app.usecase.chat import ChatUseCase
@@ -35,7 +35,6 @@ async def ask(chat_id: str, ask: Ask):
             status_code=status.HTTP_400_BAD_REQUEST, detail="chat not found"
         )
     questions = db_chat.questions or []
-
     # prepare llm services
     llm = ChatOpenAI(
         model="gpt-4o-mini",
