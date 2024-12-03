@@ -17,7 +17,7 @@ const FileViewer = () => {
   useEffect(() => {
     if (fileId) {
       fetch(
-        `${process.env.NEXT_PUBLIC_GENIA_SERIVCE}/api/v1/file/download/${fileId}`,
+        `${process.env.NEXT_PUBLIC_GENAI_SERIVCE}/api/v1/file/download/${fileId}`,
         {
           credentials: "include",
           method: "GET",

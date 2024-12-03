@@ -18,7 +18,7 @@ const UploadFilesForm = () => {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_GENIA_SERIVCE}/api/v1/file/upload`,
+        `${process.env.NEXT_PUBLIC_GENAI_SERIVCE}/api/v1/file/upload`,
         {
           credentials: "include",
           method: "POST",

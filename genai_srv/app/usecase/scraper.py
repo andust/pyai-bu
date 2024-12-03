@@ -17,7 +17,6 @@ class ScraperUseCase:
             page = await browser.new_page()
             for url in urls:
                 await page.goto(url)
-
                 body = await page.query_selector("body")
                 if body:
                     body_content = await body.inner_html()

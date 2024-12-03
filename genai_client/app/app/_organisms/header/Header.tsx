@@ -14,6 +14,7 @@ export default function Header() {
         <Link href="/">Home</Link>
         <Link href="/files">Files</Link>
         <Link href="/images">Images</Link>
+        <Link href="/scraper">Scraper</Link>
       </div>
       <div className="gap-x-2">
         User: {user?.email}&nbsp;

@@ -33,7 +33,7 @@ const GenerateImageForm = () => {
     e.preventDefault();
 
     if (content.trim()) {
-      fetch(`${process.env.NEXT_PUBLIC_GENIA_SERIVCE}/api/v1/file/generate-image/`, {
+      fetch(`${process.env.NEXT_PUBLIC_GENAI_SERIVCE}/api/v1/file/generate-image/`, {
         credentials: "include",
         method: "POST",
         cache: "no-cache",

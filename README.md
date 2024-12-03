@@ -12,6 +12,9 @@ This project is a web application built using FastAPI and Next.js and utilizes t
 ## Features
 
 - The application supports user interactions through chat.
+- Scrape and extract data from websites.
+- Upload files.
+- Query the contents of files and web pages with ease.
 - Generage images by OpenAI API.
 
 ## Instructions
@@ -40,7 +43,9 @@ This project is a web application built using FastAPI and Next.js and utilizes t
 
 ## Plan
 
-- Add a web scraper to websites.
+- Remove useless data from web scraper results.
+- Group web scraper results by domain. 
+- Group analyzer.
 - Improve the chat interface UI.
 
 ## License

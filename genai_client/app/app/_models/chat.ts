@@ -11,7 +11,7 @@ export interface Question {
 }
 
 export const getClientChat = async (id: string) => {
-  return fetch(`${process.env.NEXT_PUBLIC_GENIA_SERIVCE}/api/v1/chat/${id}`, {
+  return fetch(`${process.env.NEXT_PUBLIC_GENAI_SERIVCE}/api/v1/chat/${id}`, {
     cache: "no-cache",
     credentials: "include",
     method: "get",
@@ -25,7 +25,7 @@ export const getClientAskChat = async (
   documentId: string,
 ) => {
   return fetch(
-    `${process.env.NEXT_PUBLIC_GENIA_SERIVCE}/api/v1/rag/ask/${id}`,
+    `${process.env.NEXT_PUBLIC_GENAI_SERIVCE}/api/v1/rag/ask/${id}`,
     {
       cache: "no-cache",
       credentials: "include",
@@ -39,7 +39,7 @@ export const getClientAskChat = async (
 };
 
 export const removeClientChat = async (id: string) => {
-  return fetch(`${process.env.NEXT_PUBLIC_GENIA_SERIVCE}/api/v1/chat/${id}`, {
+  return fetch(`${process.env.NEXT_PUBLIC_GENAI_SERIVCE}/api/v1/chat/${id}`, {
     cache: "no-cache",
     credentials: "include",
     method: "delete",

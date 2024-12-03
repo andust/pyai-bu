@@ -5,7 +5,7 @@ export interface DocFile {
 }
 
 export const getClientFiles = async () => {
-  return fetch(`${process.env.NEXT_PUBLIC_GENIA_SERIVCE}/api/v1/file/`, {
+  return fetch(`${process.env.NEXT_PUBLIC_GENAI_SERIVCE}/api/v1/file/`, {
     cache: "no-cache",
     credentials: "include",
     method: "get",
