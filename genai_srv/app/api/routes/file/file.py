@@ -7,7 +7,7 @@ from openai import OpenAI
 from app.api.guard.main import get_current_user
 from app.model.user import User
 from app.repository.file import file_repository
-from app.usecase.file import FileUseCase
+from app.tasks.file.upload_tasks import upload_to_qdrant
 from app.usecase.image import ImageGenerateQuery, ImageUseCase
 
 router = APIRouter(default_response_class=JSONResponse)
@@ -23,10 +23,14 @@ async def all_files(user: User = Depends(get_current_user)):
 
 
 @router.post("/upload/")
-async def upload_file(files: list[UploadFile] = File(...)):
-    file_usecase = FileUseCase(file_repository=file_repository)
-    result = await file_usecase.upload(files=files, user_email="andrzej@example.com")
-    return result
+async def upload_file(files: list[UploadFile] = File(...), user: User = Depends(get_current_user)):
+    upload_to_qdrant.delay([{
+        "file_content": await file.read(),
+        "filename": file.filename,
+        "content_type": file.content_type,
+    } for file in files], user.email)
+
+    return "ok"
 
 
 @router.get(

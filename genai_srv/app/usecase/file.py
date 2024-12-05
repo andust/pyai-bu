@@ -1,12 +1,12 @@
+import logging
 from typing import Sequence
 from langchain_core.documents import Document
 
-from app.helpers.document.main import serialize_document
 from app.helpers.pdf.main import pdf_to_text
 from app.helpers.file.main import file_hash
+from app.helpers.qdrant.upload import upload_documents
 from app.model.file import FileProtocol
 from app.repository.file import FileRepositoryProtocol
-from app.tasks.qdrant.upload_tasks import upload_to_qdrant
 
 
 async def files_to_documents(files: list[FileProtocol]) -> list[Document]:
@@ -47,6 +47,6 @@ class FileUseCase:
         documents = await self.file_repository.upload_files(
             files=files, user_email=user_email
         )
-
-        upload_to_qdrant.delay([serialize_document(a) for a in documents])
+        async with upload_documents(docs=documents):
+            logging.info("document uploaded to qdrant")
         return documents

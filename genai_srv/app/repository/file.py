@@ -11,6 +11,9 @@ from app.helpers.file.main import file_hash
 from app.model.file import FileData, FileProtocol
 
 
+FILE_COLLECTION_NAME = "fs.files"
+
+
 class FileRepositoryProtocol(Protocol):
     async def get_by_hash(self, hash: str) -> FileData | None: ...
 
@@ -56,9 +59,20 @@ class MongoFileRepository:
     async def get_many(self) -> list[FileData]:
         # TODO use protocol to abstract this class
         # limit param
-        most_recent_three = await self.fs.find().sort("uploadDate", -1).limit(20).to_list()
+        most_recent_three = (
+            await self.fs.find().sort("uploadDate", -1).limit(20).to_list()
+        )
         print(most_recent_three)
-        return [FileData(id=str(a["_id"]), filename=a["filename"], upload_date=a["uploadDate"], content=b"", content_type=a["metadata"]["content_type"]) for a in most_recent_three]
+        return [
+            FileData(
+                id=str(a["_id"]),
+                filename=a["filename"],
+                upload_date=a["uploadDate"],
+                content=b"",
+                content_type=a["metadata"]["content_type"],
+            )
+            for a in most_recent_three
+        ]
 
     async def upload_files(
         self, files: Sequence[FileProtocol], user_email: str
@@ -74,14 +88,14 @@ class MongoFileRepository:
 
             content = await file.read()
 
-            file_id = await fs.upload_from_stream(
+            file_id = await self.fs.upload_from_stream(
                 file.filename or "no-name",
                 content,
                 metadata={
                     "content_type": file.content_type,
                     "user": user_email,
                     "hash": fhash,
-                    "vectorUploadStatus": ProcessState.PENDING
+                    "vectorUploadStatus": ProcessState.PENDING,
                 },
             )
 
@@ -106,4 +120,9 @@ class MongoFileRepository:
 
 
 fs = AsyncIOMotorGridFSBucket(db)
-file_repository = MongoFileRepository(collection=db["fs.files"], fs=fs)
+file_repository = MongoFileRepository(collection=db[FILE_COLLECTION_NAME], fs=fs)
+
+
+def new_file_repository(db_instance):
+    new_fs = AsyncIOMotorGridFSBucket(db_instance)
+    return MongoFileRepository(collection=db_instance[FILE_COLLECTION_NAME], fs=new_fs)

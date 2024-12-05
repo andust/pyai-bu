@@ -1,12 +1,23 @@
-import motor.motor_asyncio
-import motor
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
+
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from app.config.envirenment import get_settings
 
 _S = get_settings()
 
-
-client = motor.motor_asyncio.AsyncIOMotorClient(_S.MONGO_CONNECTION)
+client = AsyncIOMotorClient(_S.MONGO_CONNECTION)
 db = client[_S.MONGO_DB]
-# items_collection = db["items"]
-# chats_collection = db["chats"]
+
+
+
+@asynccontextmanager
+async def new_db() -> AsyncGenerator[AsyncIOMotorDatabase, None]:
+
+    try:
+        new_client = AsyncIOMotorClient(_S.MONGO_CONNECTION)
+        new_db = new_client[_S.MONGO_DB]
+        yield new_db
+    finally:
+        new_db.client.close()

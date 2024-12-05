@@ -8,5 +8,5 @@ celery_app = Celery(
 )
 
 celery_app.autodiscover_tasks(
-    ["app.tasks.qdrant.upload_tasks.upload_to_qdrant"], force=True
+    ["app.tasks.file.upload_tasks.upload_to_qdrant"], force=True
 )
