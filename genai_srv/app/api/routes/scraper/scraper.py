@@ -32,6 +32,6 @@ async def scrape_pages(
 
         file_usecase = FileUseCase(file_repository=file_repository)
         return await file_usecase.upload(files=files, user_email=user.email)
-    except PlaywrightError as e:
+    except PlaywrightError:
         # TODO handle this error
         return []

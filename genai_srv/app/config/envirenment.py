@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     MONGO_CONNECTION: str
     MONGO_DB: str
 
+    TEST_MONGO_CONNECTION: str
+    TEST_MONGO_DB: str
+
     QDRANT_URL: str
     QDRANT_MAIN_DOCUMANTS: str
 

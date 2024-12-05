@@ -6,6 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorCollection
 from app.db.main import db
 from app.model.chat import Chat
 
+CHAT_COLLECTION_NAME = "chat"
 
 class ChatRepositoryProtocol(Protocol):
     async def new(self, user_id: str) -> Chat | None: ...
@@ -65,4 +66,4 @@ class MongoChatRepository:
         return False
 
 
-chat_repository = MongoChatRepository(collection=db["chat"])
+chat_repository = MongoChatRepository(collection=db[CHAT_COLLECTION_NAME])
