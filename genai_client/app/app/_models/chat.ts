@@ -1,4 +1,4 @@
-import { ChatMode } from "../types";
+import { QuestionType } from "../types";
 
 export interface Chat {
   id: string;
@@ -21,7 +21,7 @@ export const getClientChat = async (id: string) => {
 export const getClientAskChat = async (
   id: string,
   question: string,
-  chatMode: ChatMode,
+  questionType: QuestionType,
   documentId: string,
 ) => {
   return fetch(
@@ -33,7 +33,7 @@ export const getClientAskChat = async (
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ content: question, chat_mode: chatMode, document_id: documentId }),
+      body: JSON.stringify({ question: question, question_type: questionType, document_id: documentId }),
     }
   );
 };

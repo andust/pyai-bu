@@ -10,7 +10,7 @@ import Button from "@/app/_atoms/button/Button";
 import Spinner from "@/app/_atoms/spinner/Spinner";
 import Textarea from "@/app/_atoms/textarea/Textarea";
 import Select, { Option } from "@/app/_molecules/select/Select";
-import { ChatMode } from "@/app/types";
+import { QuestionType } from "@/app/types";
 import { DocFile, getClientFiles } from "@/app/_models/file";
 
 const contentSchema = z
@@ -25,7 +25,7 @@ const contentSchema = z
     message: "👉 for RAG you need to select document",
   });
 
-const options: Option<ChatMode>[] = [
+const options: Option<QuestionType>[] = [
   {
     label: "Chat",
     value: "chat",
@@ -38,7 +38,7 @@ const options: Option<ChatMode>[] = [
 
 const LoginForm = ({ id }: { id: string }) => {
   const [content, setContent] = useState("");
-  const [chatMode, setChatMode] = useState<ChatMode>(options[0].value);
+  const [questionType, setQuestionType] = useState<QuestionType>(options[0].value);
   const [documents, setDocuments] = useState<DocFile[]>([]);
   const [document, setDocument] = useState<Option<string>>();
   const [errors, setErrors] = useState<string[]>([]);
@@ -57,7 +57,7 @@ const LoginForm = ({ id }: { id: string }) => {
     e.preventDefault();
 
     const documentId = document?.value || "";
-    if (chatMode === "rag" && !documentId) {
+    if (questionType === "rag" && !documentId) {
       return;
     }
 
@@ -69,7 +69,7 @@ const LoginForm = ({ id }: { id: string }) => {
       const res = await getClientAskChat(
         id,
         content,
-        chatMode,
+        questionType,
         documentId
       );
       if (res.ok) {
@@ -88,7 +88,7 @@ const LoginForm = ({ id }: { id: string }) => {
     try {
       contentSchema.parse({
         content: cleanContent,
-        isRagAndDocument: chatMode === "rag" && !document?.value,
+        isRagAndDocument: questionType === "rag" && !document?.value,
       });
       setErrors([]);
     } catch (error) {
@@ -96,7 +96,7 @@ const LoginForm = ({ id }: { id: string }) => {
         setErrors(error.errors.map((e) => e.message));
       }
     }
-  }, [cleanContent, chatMode, document]);
+  }, [cleanContent, questionType, document]);
 
   useEffect(() => {
     getClientFiles()
@@ -110,15 +110,15 @@ const LoginForm = ({ id }: { id: string }) => {
 
   return (
     <form className="space-y-5" onSubmit={onSubmitHandler}>
-      <Select<ChatMode>
+      <Select<QuestionType>
         options={options}
         onOptionChange={(o) => {
-          setChatMode(o.value);
+          setQuestionType(o.value);
         }}
         defaultOption={options[0]}
         label="Select mode"
       />
-      {chatMode === "rag" && (
+      {questionType === "rag" && (
         <Select<string>
           options={documentOptions}
           onOptionChange={(o) => {
@@ -144,7 +144,7 @@ const LoginForm = ({ id }: { id: string }) => {
       </div>
       <div className="flex justify-end">
         <Button type="submit" disabled={isLoading || isError}>
-          Ask {chatMode}
+          Ask {questionType}
         </Button>
       </div>
     </form>

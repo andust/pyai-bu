@@ -1,6 +1,7 @@
 from enum import Enum
 
 
-class ChatMode(str, Enum):
+class QuestionType(str, Enum):
     CHAT = "chat"
     RAG = "rag"
+    NEWSLETTER = "newsletter"

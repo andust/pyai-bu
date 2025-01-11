@@ -23,12 +23,20 @@ async def all_files(user: User = Depends(get_current_user)):
 
 
 @router.post("/upload/")
-async def upload_file(files: list[UploadFile] = File(...), user: User = Depends(get_current_user)):
-    upload_to_qdrant.delay([{
-        "file_content": await file.read(),
-        "filename": file.filename,
-        "content_type": file.content_type,
-    } for file in files], user.email)
+async def upload_file(
+    files: list[UploadFile] = File(...), user: User = Depends(get_current_user)
+):
+    upload_to_qdrant.delay(
+        [
+            {
+                "file_content": await file.read(),
+                "filename": file.filename,
+                "content_type": file.content_type,
+            }
+            for file in files
+        ],
+        user.email,
+    )
 
     return "ok"
 

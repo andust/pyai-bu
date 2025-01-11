@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, Protocol
 
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_core.documents import Document
@@ -22,6 +22,14 @@ async def qdrant_vector_store(embeddings):
         yield qdrant
     finally:
         qdrant.client.close()
+
+
+
+class VectorStoreProtocol(Protocol):
+    async def similarity_search(
+        self, query: str, k: int, must: dict[str, Any] | None = None
+    ) -> list[Document]: ...
+
 
 
 class QdrantVectorStoreService:
