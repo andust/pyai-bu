@@ -1,16 +1,20 @@
-import io
+from dataclasses import dataclass
 
 from bs4 import BeautifulSoup
-from fastapi import UploadFile
 from playwright.async_api import async_playwright
-from starlette.datastructures import Headers
 
 from app.helpers.date.main import now_datetime
 
 
+@dataclass
+class ScrapeData:
+    content: bytes
+    filename: str
+    headers: dict
+
 class ScraperUseCase:
-    async def scrape_pages(self, urls: list[str]) -> list[UploadFile]:
-        files = []
+    async def scrape_pages(self, urls: list[str]) -> list[ScrapeData]:
+        result = []
         async with async_playwright() as playwright:
             firefox = playwright.firefox
             browser = await firefox.launch()
@@ -24,17 +28,12 @@ class ScraperUseCase:
                     for data in soup(["style", "script"]):
                         data.decompose()
 
-                    text_file = io.BytesIO(
-                        " ".join(soup.stripped_strings).encode("utf-8")
-                    )
-                    upload_file = UploadFile(
-                        file=text_file,
+                    result.append(ScrapeData(
+                        content=" ".join(soup.stripped_strings).encode("utf-8"),
                         filename=f"{url} ({now_datetime()})",
-                        headers=Headers({"Content-Type": "text/plain"})
-                    )
-
-                    files.append(upload_file)
+                        headers={"Content-Type": "text/plain"},
+                    ))
 
             await browser.close()
 
-        return files
+        return result

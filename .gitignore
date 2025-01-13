@@ -1,6 +1,7 @@
 cache
 db-data
 **.pyc
+_trash_**.py
 .env
 prometheus_data
 qdrant_data

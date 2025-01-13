@@ -5,6 +5,7 @@ from openai import OpenAI
 
 
 from app.api.guard.main import get_current_user
+from app.model.file import ContentType
 from app.model.user import User
 from app.repository.file import file_repository
 from app.tasks.file.upload_tasks import upload_to_qdrant
@@ -18,7 +19,7 @@ router = APIRouter(default_response_class=JSONResponse)
     status_code=status.HTTP_200_OK,
 )
 async def all_files(user: User = Depends(get_current_user)):
-    results = await file_repository.get_many()
+    results = await file_repository.get_many(query={"metadata.content_type": {"$in": ContentType.text_types()}})
     return results
 
 

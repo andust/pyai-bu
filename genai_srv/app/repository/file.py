@@ -56,11 +56,11 @@ class MongoFileRepository:
         if result:
             return await self.get(result["_id"])
 
-    async def get_many(self) -> list[FileData]:
+    async def get_many(self, query: dict | None = None) -> list[FileData]:
         # TODO use protocol to abstract this class
         # limit param
         most_recent_three = (
-            await self.fs.find().sort("uploadDate", -1).limit(20).to_list()
+            await self.fs.find(query or {}).sort("uploadDate", -1).limit(20).to_list()
         )
         print(most_recent_three)
         return [
