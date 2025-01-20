@@ -14,13 +14,15 @@ from app.usecase.scraper import ScraperUseCase
 
 router = APIRouter(default_response_class=JSONResponse)
 
+class NewsletterQuery(UrlsQuery):
+    question_context: str
 
 @router.post(
     "/",
     status_code=status.HTTP_200_OK,
     response_model=Question,
 )
-async def ask(query: UrlsQuery):
+async def generate_newsletter(query: NewsletterQuery):
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         # model="gpt-4o",
@@ -36,7 +38,7 @@ async def ask(query: UrlsQuery):
             urls=[str(a) for a in query.urls]
         )
 
-        answer = await document_to_newsletter_use_case(llm=llm, documents=scrape_data)
+        answer = await document_to_newsletter_use_case(llm=llm, documents=scrape_data, question_context=query.question_context)
         qst = Question(
             content="\n".join(raw_urls), answer=answer, mode=QuestionType.NEWSLETTER
         )

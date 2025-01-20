@@ -25,7 +25,8 @@ class State(TypedDict):
     answer: str
 
 model = ChatOpenAI(
-    model="gpt-4o-mini",
+    # model="gpt-4o-mini",
+    model="gpt-4o",
     api_key=SecretStr(os.environ["OPENAI_API_KEY"]),
 )
 
@@ -53,7 +54,7 @@ async def _query_document(state: DocumentMessagesState):
     query = state["messages"][-1].content or ""
     retrieved_docs = await qdrant_vector_store.similarity_search(
         query=query,  # type: ignore
-        k=4,
+        k=6,
         must={"metadata.file_id": state["document_id"]},
     )
 

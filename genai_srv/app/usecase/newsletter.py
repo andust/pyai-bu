@@ -7,7 +7,7 @@ from app.usecase.scraper import ScrapeData
 
 
 async def document_to_newsletter_use_case(
-    llm: BaseLanguageModel, documents: list[ScrapeData]
+    llm: BaseLanguageModel, documents: list[ScrapeData], question_context: str
 ) -> str:
     try:
         text_files = [str(document.content) for document in documents]
@@ -16,22 +16,26 @@ async def document_to_newsletter_use_case(
             I need a newsletter in Polish of the Document content.
             We will skip all greetings in the newsletter, we only need the title, content and a short summary at the end (about 100 characters in a relaxed atmosphere).
             Approximately 1500 characters are needed for all.
-
+            Take into account the context of the question, if any.
             If you can't' find the information you need just say you need more information.
-                                                Add information about costs
-            Document content: {context}
+
+            Document content: {document_content}
+            Question context: {question_context}
         """)
 
         rag_chain = (
             {
-                "context": lambda x: "\n".join(x["context"]),
+                "document_content": lambda x: "\n".join(x["document_content"]),
+                "question_context": lambda x: "\n".join(x["question_context"]),
             }
             | prompt
             | llm
             | StrOutputParser()
         )
 
-        response: str = rag_chain.invoke({"context": text_files})
+        response: str = rag_chain.invoke(
+            {"document_content": text_files, "question_context": question_context}
+        )
 
         return response
 
