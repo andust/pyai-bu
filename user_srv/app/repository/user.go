@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	model "github.com/andust/user_service/models"
@@ -12,6 +13,7 @@ import (
 
 type UserRepository interface {
 	FindOne(q UserQuery) (*model.User, error)
+	FindMany(q UsersQuery) (*[]model.User, error)
 	InsertOne(model.User) (*model.User, error)
 }
 
@@ -31,6 +33,25 @@ type UserQuery struct {
 	Options
 }
 
+type UsersQuery struct {
+	IDs []string
+	Options
+}
+
+// func formatObjectIdMultiple(hex []string) ([]primitive.ObjectID, error) {
+// 	var list []primitive.ObjectID
+
+//		oids := make([]primitive.ObjectID, len(hex))
+//		for _, i := range hex {
+//			objectId, err := primitive.ObjectIDFromHex(i)
+//			if err != nil {
+//				return nil, err
+//			}
+//			oids = append(oids, objectId)
+//			list +
+//		}
+//		return list, nil
+//	}
 func (b UserQuery) Filter() bson.D {
 	// var filter bson.D
 	filter := bson.D{}
@@ -54,6 +75,42 @@ func (b UserQuery) Filter() bson.D {
 	return filter
 }
 
+func (u UsersQuery) Filters() bson.M {
+	// var filter bson.D
+	filter := bson.M{}
+
+	if len(u.IDs) > 0 {
+		// objectIDs, err := formatObjectIdMultiple(u.IDs)
+
+		var objectIDs []primitive.ObjectID
+
+		// oids := make([]primitive.ObjectID, len(hex))
+		for _, i := range u.IDs {
+			objectId, err := primitive.ObjectIDFromHex(i)
+			if err != nil {
+				return nil
+			}
+			objectIDs = append(objectIDs, objectId)
+		}
+		// return list, nil
+
+		filter["_id"] = bson.M{"$in": objectIDs}
+		fmt.Println(filter)
+		// if err == nil {
+		// 	// query := bson.M{"_id": bson.M{"$in": objectIDs}}
+
+		// }
+		// if id, err := primitive.ObjectIDFromHex(b.ID); err != nil {
+		// 	filter = append(filter, bson.E{
+		// 		Key:   "_id",
+		// 		Value: id,
+		// 	})
+		// }
+	}
+
+	return filter
+}
+
 func (u userRepository) FindOne(q UserQuery) (*model.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), DB_TIMEOUT)
 	defer cancel()
@@ -68,6 +125,28 @@ func (u userRepository) FindOne(q UserQuery) (*model.User, error) {
 	}
 
 	return &user, nil
+}
+
+func (u userRepository) FindMany(q UsersQuery) (*[]model.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), DB_TIMEOUT)
+	defer cancel()
+
+	filter := q.Filters()
+	opts := q.ManyEntryOptions()
+	cursor, err := u.collection.Find(ctx, filter, opts)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(cursor)
+	defer cursor.Close(ctx)
+
+	var users []model.User
+	if err = cursor.All(ctx, &users); err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	return &users, nil
 }
 
 func (u userRepository) InsertOne(user model.User) (*model.User, error) {

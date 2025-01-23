@@ -2,11 +2,16 @@
 
 import { useContext } from "react";
 import { UserContext } from "@/app/_context/userContext";
-import LogoutButton from "@/app/_molecules/logout-button/LogoutButton";
 import Link from "next/link";
+import Button from "@/app/_atoms/button/Button";
 
 export default function Header() {
-  const { user } = useContext(UserContext);
+  const { user, logOut } = useContext(UserContext);
+
+  const handleLogout = async () => {
+    await logOut()
+  }
+
 
   return (
     <header className="flex justify-between items-center container">
@@ -16,10 +21,14 @@ export default function Header() {
         <Link href="/images">Images</Link>
         <Link href="/scraper">Scraper</Link>
         <Link href="/newsletter">Newsletter</Link>
+        <Link href="/project">Project</Link>
+        <Link href="/estimation">Estimation</Link>
       </div>
       <div className="gap-x-2">
         User: {user?.email}&nbsp;
-        <LogoutButton>Logout</LogoutButton>
+        {user && (
+          <Button onClick={handleLogout}>Logout</Button>
+        )}
       </div>
     </header>
   );

@@ -1,9 +1,9 @@
 "use client";
 import type { Metadata } from "next";
-import Link from "next/link";
-import LogoutButton from "../_molecules/logout-button/LogoutButton";
-import { LoadUser, UserContext } from "../_context/userContext";
 import { useContext } from "react";
+import Link from "next/link";
+import { LoadUser, UserContext } from "../_context/userContext";
+import Button from "../_atoms/button/Button";
 
 export const metadata: Metadata = {
   title: "Chat Auth",
@@ -15,7 +15,11 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { user } = useContext(UserContext);
+  const { user, logOut } = useContext(UserContext);
+  const handleLogout = async () => {
+    await logOut()
+  }
+
   return (
     <LoadUser>
       <div className="space-y-5">
@@ -28,7 +32,7 @@ export default function AuthLayout({
             </ul>
             {user && (
               <li>
-                <LogoutButton>Logout</LogoutButton>
+                <Button onClick={handleLogout}>Logout</Button>
               </li>
             )}
           </ul>

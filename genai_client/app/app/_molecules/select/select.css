@@ -1,10 +1,10 @@
-ul {
+.select ul {
   opacity: 0;
   visibility: hidden;
   transform: translateY(-5px);
 }
 
-ul.show {
+.select ul.show {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);

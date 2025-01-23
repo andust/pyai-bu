@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/andust/user_service/libs"
 	"github.com/andust/user_service/repository"
@@ -24,12 +25,15 @@ func (h *Handler) UserDetail(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
+type BaseIDsParams struct {
+	Ids []string `json:"ids"`
+}
+
 func (h *Handler) UsersList(c echo.Context) error {
-	userId := c.Get("id")
-	if userId == "" {
-		return c.JSON(http.StatusBadRequest, "no user found")
-	}
-	result, err := h.Core.Repository.UserRepository.FindOne(repository.UserQuery{ID: fmt.Sprint(userId)})
+	idsParam := c.QueryParam("ids")
+	idStrings := strings.Split(idsParam, ",")
+
+	result, err := h.Core.Repository.UserRepository.FindMany(repository.UsersQuery{IDs: idStrings})
 	if err != nil {
 		h.Core.ErrorLog.Println(err)
 		echo.NewHTTPError(http.StatusBadRequest, "get users error")

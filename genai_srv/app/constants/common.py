@@ -1,5 +1,8 @@
-from pydantic import BaseModel, HttpUrl
+from enum import StrEnum
 
 
-class UrlsQuery(BaseModel):
-    urls: list[HttpUrl]
+class ComplexityLevel(StrEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"

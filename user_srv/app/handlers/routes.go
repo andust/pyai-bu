@@ -11,8 +11,8 @@ import (
 
 func (h *Handler) Routes(e *echo.Echo) {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:4200", "http://localhost:3001"},
-		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		AllowOrigins:     []string{"http://localhost:4200", "http://localhost:3001"},
+		AllowMethods:     []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
 		AllowCredentials: true,
 	}))
 
@@ -34,5 +34,6 @@ func (h *Handler) Routes(e *echo.Echo) {
 
 	apiGroup.GET("/logout", h.Logout)
 	apiGroup.GET("/user", h.UserDetail)
+	// for now only admin have access to user list - just for check if admin guard works
 	apiGroup.GET("/users", guard.AdminAuthGuard(h.UsersList))
 }

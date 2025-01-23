@@ -14,7 +14,7 @@ _S = get_settings()
 
 
 @asynccontextmanager
-async def upload_documents(docs: list[Document]):
+async def upload_documents(docs: list[Document], collection_name: str):
     clean_docs = [
         a for a in docs if a.metadata["content_type"] in POSSIBLE_VECTOR_DB_CONTENT_TYPE
     ]
@@ -31,7 +31,7 @@ async def upload_documents(docs: list[Document]):
         recursive_character_text_splitter(clean_docs),
         embeddings,
         url=_S.QDRANT_URL,
-        collection_name=_S.QDRANT_MAIN_DOCUMANTS,
+        collection_name=collection_name,
     )
 
     try:

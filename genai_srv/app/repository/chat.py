@@ -8,6 +8,7 @@ from app.model.chat import Chat
 
 CHAT_COLLECTION_NAME = "chat"
 
+
 class ChatRepositoryProtocol(Protocol):
     async def new(self, user_id: str) -> Chat | None: ...
 

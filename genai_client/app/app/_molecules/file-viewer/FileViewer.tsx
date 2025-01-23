@@ -4,9 +4,6 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// import { Document, Page, pdfjs } from "react-pdf";
-
-
 const FileViewer = () => {
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileContentType, setFileContentType] = useState<string | null>(null);
@@ -84,9 +81,6 @@ const FileViewer = () => {
         style={{ border: 'none' }}
         title="PDF Viewer"
       />
-      // <Document file={fileUrl}>
-      //   <Page pageNumber={1} />
-      // </Document>
     );
   }
 

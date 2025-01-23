@@ -4,7 +4,7 @@ import ChatForm from "@/app/_molecules/chat/ChatForm";
 import MainLayout from "@/app/_layout/MainLayout";
 
 // TODO select how ask chat - rag or normal question
-export default async function New({ params }: IdParams) {
+export default async function ChatDetail({ params }: IdParams) {
   const chatId = (await params).id || "";
   return (
     <MainLayout>

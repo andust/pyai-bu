@@ -20,5 +20,12 @@ export interface IdParams {
 export type QuestionType = "chat" | "rag";
 
 export interface SearchParams {
-  searchParams: { [key: string]: string | string[] | undefined }
-} 
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export enum ComplexityLevel {
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+  CRITICAL = "critical",
+}

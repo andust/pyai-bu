@@ -19,6 +19,7 @@ class Settings(BaseSettings):
 
     QDRANT_URL: str
     QDRANT_MAIN_DOCUMANTS: str
+    QDRANT_PROJECT_DOCUMANTS: str
 
 
 def _configure_initial_settings() -> Callable[[], Settings]:

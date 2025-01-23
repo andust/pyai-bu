@@ -58,7 +58,7 @@ const Select = <V,>({
   }, []);
 
   return (
-    <div className="relative text-white" ref={selectRef}>
+    <div className="relative text-white select" ref={selectRef}>
       <Button
         onClick={toggleSelect}
         className="w-full relative z-20 bg-black p-2 border rounded text-left flex justify-between items-center"

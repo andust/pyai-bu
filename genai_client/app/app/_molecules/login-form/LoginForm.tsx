@@ -15,7 +15,7 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`/api/login`, {
+      const res = await fetch("/api/login", {
         cache: "no-cache",
         headers: { "Content-Type": "application/json" },
         method: "post",

@@ -7,14 +7,14 @@ from langchain_openai import ChatOpenAI
 from pydantic import SecretStr
 
 from app.constants.chat import QuestionType
-from app.constants.common import UrlsQuery
+from app.constants.dto import UrlsDTO
 from app.model.question import Question
 from app.usecase.newsletter import document_to_newsletter_use_case
 from app.usecase.scraper import ScraperUseCase
 
 router = APIRouter(default_response_class=JSONResponse)
 
-class NewsletterQuery(UrlsQuery):
+class NewsletterQuery(UrlsDTO):
     question_context: str
 
 @router.post(

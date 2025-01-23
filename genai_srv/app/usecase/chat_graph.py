@@ -1,8 +1,6 @@
 import os
-from typing import TypedDict
 
 from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_core.documents import Document
 from langchain_core.messages import AnyMessage
 from langchain_core.messages import SystemMessage
 from langchain_core.messages.ai import AIMessage
@@ -10,6 +8,7 @@ from langchain_core.messages.human import HumanMessage
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.mongodb.aio import AsyncMongoDBSaver
 from langgraph.graph import MessagesState, START, END, StateGraph
+
 from pydantic import SecretStr
 
 from app.helpers.qdrant.vector_store import QdrantVectorStoreService
@@ -17,12 +16,6 @@ from app.config.envirenment import get_settings
 
 
 _S = get_settings()
-
-class State(TypedDict):
-    question: str
-    document_id: str
-    context: list[Document]
-    answer: str
 
 model = ChatOpenAI(
     # model="gpt-4o-mini",
@@ -142,7 +135,6 @@ async def ask_use_case(
         graph_builder = graph_builder.compile(checkpointer=checkpointer)
         response = await graph_builder.ainvoke(
             {
-                
                 "messages": [HumanMessage(content=question)],
                 "document_id": document_id,
             },
