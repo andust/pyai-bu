@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from typing import Any, Protocol
 
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_core.embeddings import Embeddings
 from langchain_core.documents import Document
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client.http import models
@@ -33,7 +33,7 @@ class VectorStoreProtocol(Protocol):
 
 
 class QdrantVectorStoreService:
-    def __init__(self, embeddings: OpenAIEmbeddings) -> None:
+    def __init__(self, embeddings: Embeddings) -> None:
         self.qdrant = QdrantVectorStore.from_existing_collection(
             embedding=embeddings,
             url=_S.QDRANT_URL,

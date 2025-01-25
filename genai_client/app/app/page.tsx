@@ -33,7 +33,7 @@ export default async function Home() {
             href={`/chat/${id}`}
           >
             {Array.isArray(questions)
-              ? questions[questions.length - 1].content
+              ? questions[questions.length - 1]?.content
               : "New chat"}
           </Link>
         ))}
