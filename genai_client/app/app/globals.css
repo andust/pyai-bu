@@ -20,32 +20,43 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.arrow {
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 3px;
-}
-.arrow.down {
-  transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-}
-.arrow.up {
-  transform: rotate(-135deg);
-  -webkit-transform: rotate(-135deg);
-}
 
 @layer base {
+  /* Links */
   a {
     @apply underline;
   }
+  
+  /* Forms */
   textarea {
     @apply block resize-none p-2.5 w-full text-gray-900 bg-gray-50 rounded dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white;
   }
+  
+  /* Position */
   .absolute-center {
     @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
   }
+  
+  /* Buttons */
   .btn {
     @apply py-2 px-3 border inline-block text-center
   }
+  
+  /* Custom table */
+  .color-table td {
+    @apply p-2 border
+  }
+  .color-table table tr:nth-child(4n+1) td {
+    @apply bg-zinc-500
+  }
+  .color-table table tr:nth-child(4n+2) td {
+    @apply bg-zinc-600
+  }
+  .color-table table tr:nth-child(4n+3) td {
+    @apply bg-zinc-700
+  }
+  .color-table table tr:nth-child(4n+4) td {
+    @apply bg-zinc-800
+  }
+
 }

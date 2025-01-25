@@ -14,7 +14,7 @@ _S = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_collection(_S.QDRANT_MAIN_DOCUMANTS)
-    await create_collection(_S.QDRANT_PROJECT_DOCUMANTS)
+    await create_collection(_S.QDRANT_ESTIMATION_FEED_DOCUMANTS)
 
     yield
 

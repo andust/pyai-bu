@@ -18,7 +18,6 @@ router = APIRouter(default_response_class=JSONResponse)
 )
 async def all_chats(user: User = Depends(get_current_user)):
     # TODO all user chats
-    print("user", user)
     return await chat_repository.get_all()
 
 

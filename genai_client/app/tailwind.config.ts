@@ -13,17 +13,13 @@ const config: Config = {
         foreground: "var(--foreground)",
         red: "red",
         green: "green",
+        orange: "orange",
+        blue: "blue",
       },
       container: {
         center: true
       },
     },
   },
-  // corePlugins: {
-  //   aspectRatio: false,
-  // },
-  // plugins: [
-  //   require('@tailwindcss/aspect-ratio')
-  // ],
 };
 export default config;

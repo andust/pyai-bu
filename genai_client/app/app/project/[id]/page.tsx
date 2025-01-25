@@ -40,17 +40,28 @@ export default async function ProjectDetail({ params }: IdParams) {
   return (
     <MainLayout>
       {project && (
-        <ul>
-          <li>
-            <strong>Title:</strong> {project.title}
-          </li>
-          <li>
-            <strong>Description:</strong> {project.description}
-          </li>
-          <li>
-            <strong>Complexity:</strong> {project.complexity}
-          </li>
-        </ul>
+        <>
+          <ul className="space-y-3 whitespace-break-spaces">
+            <li>
+              <strong className="text-lg">Title:</strong>
+              <div className="bg-sky-500/25 p-2">{project.title}</div>
+            </li>
+            <li>
+              <strong className="text-lg">Description:</strong>
+              <div className="bg-sky-500/25 p-2">{project.description}</div>
+            </li>
+            <li>
+              <strong className="text-lg">Complexity:</strong>
+              <div className="bg-sky-500/25 p-2">{project.complexity}</div>
+            </li>
+          </ul>
+          {project.estimation && (
+            <div className="mt-10">
+              <strong className="text-lg">Estimation:</strong>
+              <div className="bg-stone-500/25 p-2 text-left color-table" dangerouslySetInnerHTML={{ __html: project.estimation.result }} />
+            </div>
+          )}
+        </>
       )}
       <EstimationToolForm projectId={projectId} developers={developers} />
     </MainLayout>

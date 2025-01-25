@@ -1,10 +1,12 @@
 import { ComplexityLevel } from "../types";
+import { Estimation } from "./restimation";
 
 export interface Project {
   id?: string;
   title: string;
   description: string;
   complexity: ComplexityLevel;
+  estimation?: Estimation;
 }
 
 export const getClientFiles = async () => {

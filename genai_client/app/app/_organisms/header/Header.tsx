@@ -22,7 +22,7 @@ export default function Header() {
         <Link href="/scraper">Scraper</Link>
         <Link href="/newsletter">Newsletter</Link>
         <Link href="/project">Project</Link>
-        <Link href="/estimation">Estimation</Link>
+        <Link href="/estimation-feeds">Estimation feeds</Link>
       </div>
       <div className="gap-x-2">
         User: {user?.email}&nbsp;
