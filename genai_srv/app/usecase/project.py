@@ -3,8 +3,8 @@ from langchain_core.language_models.base import BaseLanguageModel
 from langchain_core.messages import SystemMessage
 from langgraph.graph import MessagesState, END, StateGraph
 
+from app.helpers.chat.message import state_conversation_messages
 from app.model.project import Project
-from app.usecase.chat_graph import _state_conversation_messages
 
 
 DATASET = [
@@ -81,7 +81,7 @@ class ProjectUseCase:
             
             Here is the document content: {state["document_content"]}
         """
-        prompt = [SystemMessage(system_message_content)] + _state_conversation_messages(
+        prompt = [SystemMessage(system_message_content)] + state_conversation_messages(
             state["messages"]
         )
         response = self.model.invoke(prompt)
@@ -104,7 +104,7 @@ class ProjectUseCase:
             Estimate this in the Polish language.
             Here is the document tasks: {state["project_tasks"]}
         """
-        prompt = [SystemMessage(system_message_content)] + _state_conversation_messages(
+        prompt = [SystemMessage(system_message_content)] + state_conversation_messages(
             state["messages"]
         )
         response = self.model.invoke(prompt)

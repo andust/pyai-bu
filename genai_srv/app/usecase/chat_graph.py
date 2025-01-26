@@ -1,12 +1,11 @@
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models import BaseLanguageModel
-from langchain_core.messages import AnyMessage
 from langchain_core.messages import SystemMessage
-from langchain_core.messages.ai import AIMessage
 from langchain_core.messages.human import HumanMessage
 from langgraph.checkpoint.mongodb.aio import AsyncMongoDBSaver
 from langgraph.graph import MessagesState, START, END, StateGraph
 
+from app.helpers.chat.message import state_conversation_messages
 from app.helpers.qdrant.vector_store import QdrantVectorStoreService
 from app.config.envirenment import get_settings
 
@@ -70,9 +69,9 @@ class ChatUseCase:
             f"{document_content}"
         )
 
-        prompt = [
-            SystemMessage(system_message_content)
-        ] + self.state_conversation_messages(state["messages"])
+        prompt = [SystemMessage(system_message_content)] + state_conversation_messages(
+            state["messages"]
+        )
         response = self.model.invoke(prompt)
         return {"messages": [response]}
 
@@ -85,23 +84,12 @@ class ChatUseCase:
             Use a maximum of fifty sentences and provide a concise answer.
         """
 
-        prompt = [
-            SystemMessage(system_message_content)
-        ] + self.state_conversation_messages(state["messages"])
+        prompt = [SystemMessage(system_message_content)] + state_conversation_messages(
+            state["messages"]
+        )
 
         response = self.model.invoke(prompt)
         return {"messages": [response]}
-
-    def state_conversation_messages(self, messages: list[AnyMessage]):
-        result = []
-
-        for i, message in enumerate(messages, 1):
-            if message.type == "human":
-                result.append(HumanMessage(content=message.content))
-            else:
-                result.append(AIMessage(content=message.content))
-
-        return result
 
     async def ask(
         self, chat_id: str, question: str, document_id: str | None = None

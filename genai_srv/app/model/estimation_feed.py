@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 from app.constants.common import ComplexityLevel
+from app.model.skill import Skill
 
 
 class EstimationFeed(BaseModel):
@@ -11,7 +12,7 @@ class EstimationFeed(BaseModel):
     developer_id: str
     estimated_time_hours: int
     actual_time_hours: int
-    tech_stack: list[str]
+    tech_skill: list[Skill]
 
     @staticmethod
     def from_dict(data: dict):
@@ -23,5 +24,5 @@ class EstimationFeed(BaseModel):
             developer_id=data.get("developer_id", ""),
             estimated_time_hours=data.get("estimated_time_hours", 0),
             actual_time_hours=data.get("actual_time_hours", 0),
-            tech_stack=data.get("tech_stack", []),
+            tech_skill=[Skill.from_dict(s) for s in data.get("tech_stack", [])],
         )
