@@ -1,14 +1,14 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 
-import { Chat } from "./_models/chat";
+import { ChatI, Chat } from "./_models/chat";
 import { createChat } from "./actions";
 import { getChats } from "./_utils/fetch/chat";
 import Button from "./_atoms/button/Button";
 import MainLayout from "./_layout/MainLayout";
 
 export default async function Home() {
-  let chats: Chat[] = [];
+  let chats: ChatI[] = [];
   try {
     const cookieStore = await cookies();
     const access = cookieStore.get("access")?.value ?? "";
@@ -26,17 +26,16 @@ export default async function Home() {
         <Button type="submit">New chat</Button>
       </form>
       <div className="flex flex-col space-y-3">
-        {chats.map(({ id, questions }) => (
-          <Link
-            className="space-y-5 bg-slate-900 rounded p-2"
-            key={id}
-            href={`/chat/${id}`}
-          >
-            {Array.isArray(questions)
-              ? questions[questions.length - 1]?.content
-              : "New chat"}
-          </Link>
-        ))}
+        {chats.map((chat) => {
+          const chatInstance = new Chat(chat);
+          return (
+            <Link
+              className="space-y-5 bg-slate-900 rounded p-2"
+              key={chat.id}
+              href={`/chat/${chat.id}`}
+            >{chatInstance.title}</Link>
+          )
+        })}
       </div>
     </MainLayout>
   );

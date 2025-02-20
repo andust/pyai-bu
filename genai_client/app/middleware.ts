@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   const cookieStore = await cookies();
   try {
     const access = cookieStore.get("access")?.value ?? "";
-    
+
     if (!access.trim()) {
       return NextResponse.redirect(
         new URL("/auth", request.url)
@@ -33,6 +33,7 @@ export async function middleware(request: NextRequest) {
     console.error(error);
   }
 
+  cookieStore.delete("access")
   return NextResponse.redirect(
     new URL("/auth/logout", request.url)
   );

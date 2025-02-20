@@ -7,21 +7,21 @@ import (
 	"log"
 
 	"github.com/andust/user_service/constants"
+	"github.com/andust/user_service/libs"
 	model "github.com/andust/user_service/models"
 	"github.com/andust/user_service/repository"
 	"github.com/andust/user_service/utils"
-	"github.com/redis/go-redis/v9"
 )
 
 type login struct {
 	ErrorLog       *log.Logger
 	UserRepository repository.UserRepository
-	RedisClient    *redis.Client
+	RedisClient    libs.MemoryDB
 	User           *model.User
 }
 
-func NewLogin(logger *log.Logger, userRepository repository.UserRepository, redis *redis.Client) login {
-	return login{ErrorLog: logger, UserRepository: userRepository, RedisClient: redis}
+func NewLogin(logger *log.Logger, userRepository repository.UserRepository, redisClient libs.MemoryDB) login {
+	return login{ErrorLog: logger, UserRepository: userRepository, RedisClient: redisClient}
 }
 
 func (l *login) Base(email, password string) (string, error) {

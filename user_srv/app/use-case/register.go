@@ -4,20 +4,20 @@ import (
 	"errors"
 	"log"
 
+	"github.com/andust/user_service/libs"
 	model "github.com/andust/user_service/models"
 	"github.com/andust/user_service/repository"
-	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type register struct {
 	ErrorLog       *log.Logger
 	UserRepository repository.UserRepository
-	RedisClient    *redis.Client
+	RedisClient    libs.MemoryDB
 }
 
-func NewRegister(logger *log.Logger, userRepository repository.UserRepository, redis *redis.Client) register {
-	return register{ErrorLog: logger, UserRepository: userRepository, RedisClient: redis}
+func NewRegister(logger *log.Logger, userRepository repository.UserRepository, redisClient libs.MemoryDB) register {
+	return register{ErrorLog: logger, UserRepository: userRepository, RedisClient: redisClient}
 }
 
 func (r *register) Base(email, password string) (*model.User, error) {

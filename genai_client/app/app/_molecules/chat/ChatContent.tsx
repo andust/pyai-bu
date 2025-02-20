@@ -3,7 +3,7 @@
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { Chat, getClientChat, removeClientChat } from "@/app/_models/chat";
+import { ChatI, getClientChat, removeClientChat } from "@/app/_models/chat";
 import { ChatContext } from "@/app/_context/chatContext";
 import Button from "@/app/_atoms/button/Button";
 import Confirm from "@/app/_atoms/confirm/Confirm";
@@ -16,7 +16,7 @@ const ChatContent = ({ id }: { id: string }) => {
       .then((res) => {
         return res.json();
       })
-      .then((chat: Chat) => {
+      .then((chat: ChatI) => {
         setQuestions(chat.questions);
       });
   }, [id, setQuestions]);

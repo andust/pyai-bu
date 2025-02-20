@@ -6,14 +6,13 @@ import (
 
 	"github.com/andust/user_service/cmd/scripts/migrate"
 	"github.com/andust/user_service/core"
-	"github.com/andust/user_service/repository"
 )
 
 func main() {
 	newCore := core.New()
 	newCore.InfoLog.Println("enter scripts package")
-	newCore.InitRepository(os.Getenv("DB_NAME"))
-	defer repository.CloseDB()
+	newCore.InitRepository(os.Getenv("SUS_DB_HOST"), os.Getenv("DB_NAME"))
+	defer newCore.Repository.CloseDB()
 
 	args := os.Args
 	if len(args) <= 1 {

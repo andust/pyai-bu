@@ -7,7 +7,6 @@ import (
 
 	"github.com/andust/user_service/core"
 	"github.com/andust/user_service/handlers"
-	"github.com/andust/user_service/repository"
 	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -21,10 +20,10 @@ func main() {
 func serve(c *core.Core) {
 	c.InfoLog.Println("start server")
 
-	c.InitRepository(os.Getenv("DB_NAME"))
-	defer repository.CloseDB()
+	c.InitRepository(os.Getenv("SUS_DB_HOST"), os.Getenv("DB_NAME"))
+	defer c.Repository.CloseDB()
 
-	c.InitRedisClient()
+	c.InitRedisClient(os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT"), os.Getenv("REDIS_PASS"))
 
 	e := echo.New()
 	h := handlers.Handler{Core: c}

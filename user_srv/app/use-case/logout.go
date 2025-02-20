@@ -3,15 +3,15 @@ package usecase
 import (
 	"context"
 
-	"github.com/redis/go-redis/v9"
+	"github.com/andust/user_service/libs"
 )
 
 type logout struct {
-	RedisClient *redis.Client
+	RedisClient libs.MemoryDB
 }
 
-func NewLogout(redis *redis.Client) logout {
-	return logout{RedisClient: redis}
+func NewLogout(redisClient libs.MemoryDB) logout {
+	return logout{RedisClient: redisClient}
 }
 
 func (l *logout) Base(userId string) error {

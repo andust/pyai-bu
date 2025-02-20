@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -15,6 +16,7 @@ type UserRepository interface {
 	FindOne(q UserQuery) (*model.User, error)
 	FindMany(q UsersQuery) (*[]model.User, error)
 	InsertOne(model.User) (*model.User, error)
+	Drop(confirm string) error
 }
 
 type userRepository struct {
@@ -137,7 +139,6 @@ func (u userRepository) FindMany(q UsersQuery) (*[]model.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(cursor)
 	defer cursor.Close(ctx)
 
 	var users []model.User
@@ -168,6 +169,14 @@ func (u userRepository) InsertOne(user model.User) (*model.User, error) {
 	return &user, nil
 }
 
+func (u userRepository) Drop(confirm string) error {
+	if confirm == "yes" {
+		return u.collection.Drop(context.TODO())
+	}
+	return errors.New("NEED 'yes' CONFIRMATION TO PROCEED")
+}
+
+// TODO remove if we don't need fake user repository
 type fakeUserRepository struct {
 	users []model.User
 }

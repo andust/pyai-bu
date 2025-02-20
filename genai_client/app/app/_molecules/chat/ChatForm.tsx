@@ -18,7 +18,7 @@ const contentSchema = z
     content: z
       .string()
       .min(2, { message: "👉 min 2 characters" })
-      .max(1000, { message: "👉 max 1000 characters" }),
+      .max(5000, { message: "👉 max 5000 characters" }),
     isRagAndDocument: z.boolean(),
   })
   .refine((data) => !data.isRagAndDocument, {

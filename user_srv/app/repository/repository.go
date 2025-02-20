@@ -9,24 +9,32 @@ import (
 
 const DB_TIMEOUT = time.Second * 3
 
-var db *mongo.Client
+const USER_COLLECTION = "user"
+
+// var db *mongo.Client
 
 type Repository struct {
+	Client         *mongo.Client
 	UserRepository UserRepository
 }
 
-func collection(databaseName string, collectionName string) *mongo.Collection {
-	return db.Database(databaseName).Collection(collectionName)
+func (r *Repository) CloseDB() {
+	r.Client.Disconnect(context.TODO())
+}
+
+func collection(client *mongo.Client, databaseName string, collectionName string) *mongo.Collection {
+	return client.Database(databaseName).Collection(collectionName)
 }
 
 func New(client *mongo.Client, databaseName string) *Repository {
-	db = client
+	// db = client
 
 	return &Repository{
-		UserRepository: NewUserRepository(collection(databaseName, "user")),
+		Client:         client,
+		UserRepository: NewUserRepository(collection(client, databaseName, USER_COLLECTION)),
 	}
 }
 
-func CloseDB() error {
-	return db.Disconnect(context.TODO())
-}
+// func CloseDB() error {
+// 	return db.Disconnect(context.TODO())
+// }

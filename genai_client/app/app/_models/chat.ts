@@ -1,8 +1,27 @@
 import { QuestionType } from "../types";
 
-export interface Chat {
+export interface ChatI {
   id: string;
+  title?: string;
   questions: Question[];
+}
+
+export class Chat {
+  chat: ChatI;
+
+  constructor(chat: ChatI) {
+    this.chat = chat;
+  }
+  
+  public get title(): string {
+    if (this.chat.title && this.chat.title !== "") {
+      return this.chat.title;
+    }
+  
+    return Array.isArray(this.chat.questions)
+      ? this.chat.questions[this.chat.questions.length - 1]?.content
+      : "New chat";
+  }
 }
 
 export interface Question {
@@ -22,7 +41,7 @@ export const getClientAskChat = async (
   id: string,
   question: string,
   questionType: QuestionType,
-  documentId: string,
+  documentId: string
 ) => {
   return fetch(
     `${process.env.NEXT_PUBLIC_GENAI_SERIVCE}/api/v1/rag/ask/${id}`,
@@ -33,7 +52,11 @@ export const getClientAskChat = async (
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ question: question, question_type: questionType, document_id: documentId }),
+      body: JSON.stringify({
+        question: question,
+        question_type: questionType,
+        document_id: documentId,
+      }),
     }
   );
 };

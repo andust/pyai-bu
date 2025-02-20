@@ -58,9 +58,9 @@ services:
     ports:
       - 7008:7008
 
-  lem_db_mongo:
-    container_name: lem_db_mongo
-    hostname: lem_db_mongo
+  pyai_db_mongo:
+    container_name: pyai_db_mongo
+    hostname: pyai_db_mongo
     image: mongo:7.0
     environment:
       DB_NAME: lem_mdb
@@ -71,15 +71,27 @@ services:
     ports:
       - 27017:27017
 
-  lem_redis:
-    container_name: lem_redis
-    hostname: lem_redis
+  pyai_redis:
+    container_name: pyai_redis
+    hostname: pyai_redis
     image: redis:7.4
     command: redis-server --save 20 1 --loglevel warning --requirepass q2sGPHduXqKHSsYlz59FF9i7hc8VUraQ
     volumes:
       - ./cache:/data
     ports:
       - 6379:6379
+
+
+  test_pyai_redis:
+    container_name: test_pyai_redis
+    hostname: test_pyai_redis
+    image: redis:7.4
+    command: redis-server --port 6380  --save 20 1 --loglevel warning --requirepass 2qsGPHduXqKHSsYlz59FF9i7hc8VUraQ
+    volumes:
+      - ./test_cache:/data
+    ports:
+      - 6380:6380
+
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -105,23 +117,23 @@ services:
     volumes:
       - ./qdrant_data:/qdrant/storage
 
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus_data:/prometheus
-    ports:
-      - 9090:9090
+#   prometheus:
+#     image: prom/prometheus
+#     volumes:
+#       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+#       - ./prometheus_data:/prometheus
+#     ports:
+#       - 9090:9090
 
-  grafana:
-    image: grafana/grafana-enterprise
-    container_name: grafana
-    restart: unless-stopped
-    environment:
-      GF_SECURITY_ADMIN_USER: root
-      GF_SECURITY_ADMIN_PASSWORD: password
-    ports:
-      - 3000:3000
+#   grafana:
+#     image: grafana/grafana-enterprise
+#     container_name: grafana
+#     restart: unless-stopped
+#     environment:
+#       GF_SECURITY_ADMIN_USER: root
+#       GF_SECURITY_ADMIN_PASSWORD: password
+#     ports:
+#       - 3000:3000
 
 configs:
   qdrant_config:

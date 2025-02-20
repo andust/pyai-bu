@@ -10,7 +10,6 @@ import (
 	"github.com/andust/user_service/libs"
 	"github.com/andust/user_service/repository"
 	"github.com/andust/user_service/utils"
-	"github.com/redis/go-redis/v9"
 )
 
 type Token interface {
@@ -20,11 +19,11 @@ type Token interface {
 type token struct {
 	ErrorLog       *log.Logger
 	UserRepository repository.UserRepository
-	RedisClient    *redis.Client
+	RedisClient    libs.MemoryDB
 }
 
-func NewToken(logger *log.Logger, userRepository repository.UserRepository, redis *redis.Client) token {
-	return token{ErrorLog: logger, UserRepository: userRepository, RedisClient: redis}
+func NewToken(logger *log.Logger, userRepository repository.UserRepository, redisClient libs.MemoryDB) token {
+	return token{ErrorLog: logger, UserRepository: userRepository, RedisClient: redisClient}
 }
 
 func (t *token) Refres(accessToken string) (string, error) {
@@ -39,7 +38,7 @@ func (t *token) Refres(accessToken string) (string, error) {
 
 	// 2. pick and verify user refresh token
 	userID := fmt.Sprint(claim["id"])
-	refreshToken, err := t.RedisClient.Get(context.Background(), userID).Result()
+	refreshToken, err := t.RedisClient.Get(context.Background(), userID)
 	if err != nil {
 		return "", errors.New("logged out")
 	}

@@ -1,3 +1,4 @@
+import base64
 from fastapi import Depends, File, UploadFile, status, Response
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRouter
@@ -40,6 +41,35 @@ async def upload_file(
     )
 
     return "ok"
+
+@router.post("/vision/")
+async def vision_file(
+    file: UploadFile = File()
+):
+    client = OpenAI()
+    file_content = await file.read()
+    base64_image = base64.b64encode(file_content).decode("utf-8")
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Give me HTML representation of this design, style with tailwindcss classes",
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/png;base64,{base64_image}"},
+                    },
+                ],
+            }
+        ],
+    )
+    print(response)
+    return Response(content=response.choices[0].message)
 
 
 @router.get(
