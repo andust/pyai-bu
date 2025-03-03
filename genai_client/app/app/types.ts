@@ -17,7 +17,7 @@ export interface IdParams {
   params: Promise<{ id: string }>;
 }
 
-export type QuestionType = "chat" | "rag";
+export type QuestionType = "chat" | "rag" | "aws";
 
 export interface SearchParams {
   searchParams: { [key: string]: string | string[] | undefined };

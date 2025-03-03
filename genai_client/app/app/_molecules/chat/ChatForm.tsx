@@ -31,12 +31,16 @@ const options: Option<QuestionType>[] = [
     value: "chat",
   },
   {
+    label: "AWS",
+    value: "aws",
+  },
+  {
     label: "RAG",
     value: "rag",
   },
 ];
 
-const LoginForm = ({ id }: { id: string }) => {
+const ChatForm = ({ id }: { id: string }) => {
   const [content, setContent] = useState("");
   const [questionType, setQuestionType] = useState<QuestionType>(options[0].value);
   const [documents, setDocuments] = useState<DocFile[]>([]);
@@ -151,4 +155,4 @@ const LoginForm = ({ id }: { id: string }) => {
   );
 };
 
-export default LoginForm;
+export default ChatForm;

@@ -5,3 +5,4 @@ class QuestionType(StrEnum):
     CHAT = "chat"
     RAG = "rag"
     NEWSLETTER = "newsletter"
+    AWS = "aws"

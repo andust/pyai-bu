@@ -19,7 +19,7 @@ router = APIRouter(default_response_class=JSONResponse)
 
 class Ask(BaseModel):
     question: str
-    question_type: Literal[QuestionType.CHAT, QuestionType.RAG]
+    question_type: Literal[QuestionType.CHAT, QuestionType.RAG, QuestionType.AWS]
     document_id: str
 
 
@@ -38,8 +38,8 @@ async def ask(chat_id: str, ask: Ask):
 
 
     model = ChatOpenAI(
-        model="gpt-4o-mini",
-        # model="gpt-4o",
+        # model="gpt-4o-mini",
+        model="gpt-4o",
         api_key=SecretStr(os.environ["OPENAI_API_KEY"]),
     )
 
@@ -57,7 +57,7 @@ async def ask(chat_id: str, ask: Ask):
         vector_store=qdrant_vector_store
     )
     answer = await chat_use_case.ask(
-        chat_id=chat_id, question=ask.question, document_id=ask.document_id
+        chat_id=chat_id, question=ask.question, document_id=ask.document_id, question_type=ask.question_type
     )
     if answer:
         # update db and return questions

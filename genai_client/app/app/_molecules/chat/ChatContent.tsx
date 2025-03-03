@@ -35,24 +35,18 @@ const ChatContent = ({ id }: { id: string }) => {
         <Button>Delete chat</Button>
       </Confirm>
 
-      {questions?.map((question, index) => {
-        const whitespaceClassname = question.answer.includes("```")
-          ? "whitespace-pre"
-          : "whitespace-pre-line";
-
-        return (
-          <div key={`${question.content}-${index}`}>
-            <h2 className="p-2 rounded bg-slate-700 mb-1">
-              {question.content}
-            </h2>
-            <pre
-              className={`p-2 ${whitespaceClassname} text-left w-11/12 bg-slate-900 rounded ml-auto mr-0 overflow-auto `}
-            >
-              {question.answer}
-            </pre>
-          </div>
-        );
-      })}
+      {questions?.map((question, index) => (
+        <div key={`${question.content}-${index}`} className="mb-4">
+          <h2 className="p-4 rounded bg-slate-700 text-white mb-2">
+            {question.content}
+          </h2>
+          <pre
+            className={`p-4 text-left w-full bg-slate-900 rounded shadow-inner overflow-auto text-white whitespace-pre-wrap`}
+          >
+            {question.answer}
+          </pre>
+        </div>
+      ))}
     </div>
   );
 };

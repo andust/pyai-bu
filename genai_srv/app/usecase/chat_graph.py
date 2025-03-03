@@ -5,6 +5,7 @@ from langchain_core.messages.human import HumanMessage
 from langgraph.checkpoint.mongodb.aio import AsyncMongoDBSaver
 from langgraph.graph import MessagesState, START, END, StateGraph
 
+from app.constants.chat import QuestionType
 from app.helpers.chat.message import state_conversation_messages
 from app.helpers.qdrant.vector_store import QdrantVectorStoreService
 from app.config.envirenment import get_settings
@@ -16,6 +17,7 @@ _S = get_settings()
 class DocumentMessagesState(MessagesState):
     document_id: str
     document_content: str
+    question_type: QuestionType
 
 
 class ChatUseCase:
@@ -30,8 +32,11 @@ class ChatUseCase:
         self.vector_store = vector_store
 
     def node_route(self, state: DocumentMessagesState):
-        if state.get("document_id"):
+        question_type = state.get("question_type")
+        if question_type is QuestionType.RAG:
             return "query_document"
+        elif question_type is QuestionType.AWS:
+            return "aws"
         else:
             return "generate"
 
@@ -91,8 +96,24 @@ class ChatUseCase:
         response = self.model.invoke(prompt)
         return {"messages": [response]}
 
+    def aws(self, state: DocumentMessagesState):
+        """Generate aws answer."""
+
+        system_message_content = """
+            You are an AWS specialist. Please answer my questions about AWS devops.
+
+            If you don't know the answer, just say you don't know and need more information.
+        """
+
+        prompt = [SystemMessage(system_message_content)] + state_conversation_messages(
+            state["messages"]
+        )
+
+        response = self.model.invoke(prompt)
+        return {"messages": [response]}
+
     async def ask(
-        self, chat_id: str, question: str, document_id: str | None = None
+        self, chat_id: str, question: str, document_id: str | None = None, question_type: QuestionType = QuestionType.CHAT
     ) -> str | None:
         async with AsyncMongoDBSaver.from_conn_string(
             _S.MONGO_CONNECTION
@@ -101,10 +122,12 @@ class ChatUseCase:
 
             graph_builder.add_node(self.query_document)
             graph_builder.add_node(self.generate)
+            graph_builder.add_node(self.aws)
             graph_builder.add_node(self.rag)
 
             graph_builder.add_edge("query_document", "rag")
             graph_builder.add_edge("rag", END)
+            graph_builder.add_edge("aws", END)
             graph_builder.add_edge("generate", END)
 
             graph_builder.add_conditional_edges(
@@ -114,6 +137,7 @@ class ChatUseCase:
                     END: END,
                     "query_document": "query_document",
                     "generate": "generate",
+                    "aws": "aws",
                 },
             )
 
@@ -122,6 +146,7 @@ class ChatUseCase:
                 {
                     "messages": [HumanMessage(content=question)],
                     "document_id": document_id,
+                    "question_type": question_type,
                 },
                 config={"configurable": {"thread_id": chat_id}},
             )
